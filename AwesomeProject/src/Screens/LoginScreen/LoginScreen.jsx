@@ -15,21 +15,17 @@ import {
 import BackPhoto from "../../images/PhotoBG.png";
 import AddIcon from "../../images/add.png";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export const Login = () => {
   const [mail, setMail] = useState("");
   const [pass, setPass] = useState("");
+  const navigation = useNavigation();
 
   const onLogin = () => {
     console.log(
       "Ви ввели:",
       `
-      Email: ${mail}
-      Password: ${pass}`
-    );
-    Alert.alert(
-      "Ви ввели:",
-      `      
       Email: ${mail}
       Password: ${pass}`
     );
@@ -63,7 +59,9 @@ export const Login = () => {
                 Увійти
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => navigation.navigate("Registration")}
+            >
               <Text style={styles.logIn}>Немає акаунту? Зареєструватися</Text>
             </TouchableOpacity>
           </View>

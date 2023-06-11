@@ -15,11 +15,13 @@ import {
 import BackPhoto from "../../images/PhotoBG.png";
 import AddIcon from "../../images/add.png";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export const RegistrationScreen = () => {
   const [login, setLogin] = useState("");
   const [mail, setMail] = useState("");
   const [pass, setPass] = useState("");
+  const navigation = useNavigation();
 
   const onRegistr = () => {
     console.log(
@@ -28,13 +30,10 @@ export const RegistrationScreen = () => {
       Email: ${mail}
       Password: ${pass}`
     );
-    Alert.alert(
-      "Ви ввели:",
-      `
-      Login: ${login}
-      Email: ${mail}
-      Password: ${pass}`
-    );
+  };
+
+  const registr = () => {
+    navigation.navigate("Posts");
   };
 
   return (
@@ -68,10 +67,10 @@ export const RegistrationScreen = () => {
             <TouchableOpacity style={styles.shown}>
               <Text style={styles.logIn}>Показати</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={onRegistr}>
+            <TouchableOpacity style={styles.button} onPress={registr}>
               <Text style={styles.registration}>Зареєструватись</Text>
             </TouchableOpacity>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
               <Text style={styles.logIn}>Вже є акаунт? Увійти</Text>
             </TouchableOpacity>
             {/* <Button title="Зареєструватись" style={styles.registration} />
