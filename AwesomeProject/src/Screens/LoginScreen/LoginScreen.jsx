@@ -31,6 +31,14 @@ export const Login = () => {
     );
   };
 
+  const registr = () => {
+    if (mail === "" || pass === "") {
+      Alert.alert("some of the fields are not filled");
+      return;
+    }
+    navigation.navigate("Home", { screen: "Posts" });
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.wrap}>
@@ -55,7 +63,7 @@ export const Login = () => {
               <Text style={styles.logIn}>Показати</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.button}>
-              <Text style={styles.registration} onPress={onLogin}>
+              <Text style={styles.registration} onPress={registr}>
                 Увійти
               </Text>
             </TouchableOpacity>

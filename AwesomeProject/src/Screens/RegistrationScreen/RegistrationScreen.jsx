@@ -33,7 +33,11 @@ export const RegistrationScreen = () => {
   };
 
   const registr = () => {
-    navigation.navigate("Posts");
+    if (login === "" || mail === "" || pass === "") {
+      Alert.alert("some of the fields are not filled");
+      return;
+    }
+    navigation.navigate("Home", { screen: "Posts" });
   };
 
   return (
