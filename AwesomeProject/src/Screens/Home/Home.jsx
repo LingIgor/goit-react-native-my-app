@@ -43,7 +43,7 @@ export const Home = () => {
           ),
           tabBarItemStyle: {
             height: 50,
-            borderRadius: 30,
+            borderRadius: 20,
             marginTop: 9,
             marginRight: 10,
             marginLeft: 20,
@@ -74,7 +74,7 @@ export const Home = () => {
           tabBarItemStyle: {
             backgroundColor: "#FF6C00",
             height: 50,
-            borderRadius: 40,
+            borderRadius: 20,
             marginTop: 9,
             marginHorizontal: 5,
           },
