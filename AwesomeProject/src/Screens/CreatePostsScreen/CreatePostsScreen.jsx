@@ -11,7 +11,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   TextInput,
   TouchableOpacity,
@@ -27,19 +27,39 @@ export const CreatePostsScreen = () => {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.cameraRequestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
     })();
   }, []);
 
+  if (hasPermission === false || null) {
+    return <Text>No access to camera</Text>;
+  }
+
   const saveFoto = async () => {
     if (cameraRef) {
-      const { uri } = await cameraRef.takePictureAsync();
-      await MediaLibrary.createAssetAsync(uri);
-      setImage(uri);
+      try {
+        const { uri } = await cameraRef.takePictureAsync();
+        await MediaLibrary.requestPermissionsAsync();
+        console.log(uri);
+        setImage(uri);
+      } catch (e) {
+        console.log(e);
+      }
     }
+  };
+
+  const onPublish = () => {
+    if (!image) return;
+    navigation.navigate("Home", {
+      screen: "Posts",
+      params: { post: image },
+    });
+    console.log(image);
+    setImage(null);
+    console.log(image);
   };
 
   return (
@@ -59,12 +79,7 @@ export const CreatePostsScreen = () => {
         <Button
           style={styles.button}
           title="Опубліковати"
-          onPress={() =>
-            navigation.navigate("Home", {
-              screen: "Posts",
-              params: { item: image },
-            })
-          }
+          onPress={onPublish}
         ></Button>
       </TouchableWithoutFeedback>
     </View>
@@ -129,37 +144,4 @@ const styles = StyleSheet.create({
     height: 234,
     resizeMode: "stretch",
   },
-  // camera: { flex: 1 },
-  // photoView: {
-  //   flex: 1,
-  //   backgroundColor: "transparent",
-  //   justifyContent: "flex-end",
-  // },
-
-  // flipContainer: {
-  //   flex: 0.1,
-  //   alignSelf: "flex-end",
-  // },
-
-  // button: { alignSelf: "center" },
-
-  // takePhotoOut: {
-  //   borderWidth: 2,
-  //   borderColor: "white",
-  //   height: 50,
-  //   width: 50,
-  //   display: "flex",
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   borderRadius: 50,
-  // },
-
-  // takePhotoInner: {
-  //   borderWidth: 2,
-  //   borderColor: "white",
-  //   height: 40,
-  //   width: 40,
-  //   backgroundColor: "white",
-  //   borderRadius: 50,
-  // },
 });
