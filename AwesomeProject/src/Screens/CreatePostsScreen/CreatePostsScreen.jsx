@@ -10,8 +10,9 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import { Ionicons, Feather } from "@expo/vector-icons";
-import { useEffect, useRef, useState } from "react";
+import * as Location from "expo-location";
+import { Feather } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
 import {
   TextInput,
   TouchableOpacity,
@@ -24,6 +25,8 @@ export const CreatePostsScreen = () => {
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [image, setImage] = useState(null);
+  const [name, setName] = useState("");
+  const [nameLocation, setNameLocation] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -31,6 +34,12 @@ export const CreatePostsScreen = () => {
       await MediaLibrary.requestPermissionsAsync();
 
       setHasPermission(status === "granted");
+
+      let locationPermission =
+        await Location.requestForegroundPermissionsAsync();
+      if (locationPermission.status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
     })();
   }, []);
 
@@ -43,7 +52,7 @@ export const CreatePostsScreen = () => {
       try {
         const { uri } = await cameraRef.takePictureAsync();
         await MediaLibrary.requestPermissionsAsync();
-        console.log(uri);
+
         setImage(uri);
       } catch (e) {
         console.log(e);
@@ -51,37 +60,48 @@ export const CreatePostsScreen = () => {
     }
   };
 
-  const onPublish = () => {
+  const onPublish = async () => {
     if (!image) return;
+
+    let location = await Location.getCurrentPositionAsync({});
+
+    const post = { image, name, nameLocation, location };
     navigation.navigate("Home", {
       screen: "Posts",
-      params: { post: image },
+      params: post,
     });
-    console.log(image);
     setImage(null);
-    console.log(image);
+    setNameLocation("");
   };
 
   return (
     <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.addFoto}>
-          <Camera style={styles.camera} type={type} ref={setCameraRef}>
-            <TouchableOpacity style={styles.fotoIcon} onPress={saveFoto}>
-              <Feather name="camera" size={24} style={styles.icon} />
-            </TouchableOpacity>
-          </Camera>
-        </View>
+      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
+      <View style={styles.addFoto}>
+        <Camera style={styles.camera} type={type} ref={setCameraRef}>
+          <TouchableOpacity style={styles.fotoIcon} onPress={saveFoto}>
+            <Feather name="camera" size={24} style={styles.icon} />
+          </TouchableOpacity>
+        </Camera>
+      </View>
 
-        <Text>Make foto</Text>
-        <TextInput style={styles.input} placeholder="Name"></TextInput>
-        <TextInput style={styles.input} placeholder="Location"></TextInput>
-        <Button
-          style={styles.button}
-          title="Опубліковати"
-          onPress={onPublish}
-        ></Button>
-      </TouchableWithoutFeedback>
+      <Text>Make foto</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        onChangeText={setName}
+      ></TextInput>
+      <TextInput
+        style={styles.input}
+        placeholder="Location"
+        onChangeText={setNameLocation}
+      ></TextInput>
+      <Button
+        style={styles.button}
+        title="Опубліковати"
+        onPress={onPublish}
+      ></Button>
+      {/* </TouchableWithoutFeedback> */}
     </View>
   );
 };
