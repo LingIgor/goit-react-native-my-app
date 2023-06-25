@@ -25,24 +25,28 @@ export const PostsScreen = () => {
     <View>
       <Image style={styles.img} source={{ uri: item.image }}></Image>
       <Text style={styles.nameText}>{item.name}</Text>
-      <TouchableOpacity
-        onPress={() => navigation.navigate("Comments", { uri: item.image })}
-      >
-        <Feather name="message-circle" size={24} color={"#bdbdbd"} />
-        <Text style={styles.commentsText}>0</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.locationWrap}
-        onPress={() =>
-          navigation.navigate("Map", {
-            latitude: item.location.coords.latitude,
-            longitude: item.location.coords.longitude,
-          })
-        }
-      >
-        <Feather name="map-pin" size={24} color="#bdbdbd" />
-        <Text style={styles.nameLocationText}>{item.nameLocation}</Text>
-      </TouchableOpacity>
+      <View style={styles.iconBar}>
+        <TouchableOpacity
+          style={styles.iconLoc}
+          onPress={() => navigation.navigate("Comments", { uri: item.image })}
+        >
+          <Feather name="message-circle" size={24} color={"#bdbdbd"} />
+          <Text>0</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.iconLoc}
+          onPress={() =>
+            navigation.navigate("Map", {
+              latitude: item.location.coords.latitude,
+              longitude: item.location.coords.longitude,
+            })
+          }
+        >
+          <Feather name="map-pin" size={24} color="#bdbdbd" />
+          <Text style={styles.nameLocationText}>{item.nameLocation}</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
@@ -73,9 +77,25 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   img: {
-    marginTop: 32,
     width: "100%",
     height: 234,
     resizeMode: "stretch",
+  },
+  iconBar: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  iconLoc: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    fontSize: 16,
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 8,
   },
 });

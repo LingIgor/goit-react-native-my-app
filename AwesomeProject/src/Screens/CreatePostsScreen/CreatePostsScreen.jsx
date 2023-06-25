@@ -2,9 +2,8 @@ import {
   StyleSheet,
   View,
   Text,
-  Alert,
+  TouchableWithoutFeedback,
   Keyboard,
-  Button,
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -13,11 +12,7 @@ import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
-import {
-  TextInput,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
+import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -43,20 +38,15 @@ export const CreatePostsScreen = () => {
     })();
   }, []);
 
-  if (hasPermission === false || null) {
+  if (!hasPermission) {
     return <Text>No access to camera</Text>;
   }
 
   const saveFoto = async () => {
     if (cameraRef) {
-      try {
-        const { uri } = await cameraRef.takePictureAsync();
-        await MediaLibrary.requestPermissionsAsync();
-
-        setImage(uri);
-      } catch (e) {
-        console.log(e);
-      }
+      const { uri } = await cameraRef.takePictureAsync();
+      await MediaLibrary.requestPermissionsAsync();
+      setImage(uri);
     }
   };
 
@@ -72,37 +62,36 @@ export const CreatePostsScreen = () => {
     });
     setImage(null);
     setNameLocation("");
+    setName("");
   };
 
   return (
-    <View style={styles.container}>
-      {/* <TouchableWithoutFeedback onPress={Keyboard.dismiss}> */}
-      <View style={styles.addFoto}>
-        <Camera style={styles.camera} type={type} ref={setCameraRef}>
-          <TouchableOpacity style={styles.fotoIcon} onPress={saveFoto}>
-            <Feather name="camera" size={24} style={styles.icon} />
-          </TouchableOpacity>
-        </Camera>
-      </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <View style={styles.addFoto}>
+          <Camera style={styles.camera} type={type} ref={setCameraRef}>
+            <TouchableOpacity style={styles.fotoIcon} onPress={saveFoto}>
+              <Feather name="camera" size={24} style={styles.icon} />
+            </TouchableOpacity>
+          </Camera>
+        </View>
 
-      <Text>Make foto</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Name"
-        onChangeText={setName}
-      ></TextInput>
-      <TextInput
-        style={styles.input}
-        placeholder="Location"
-        onChangeText={setNameLocation}
-      ></TextInput>
-      <Button
-        style={styles.button}
-        title="Опубліковати"
-        onPress={onPublish}
-      ></Button>
-      {/* </TouchableWithoutFeedback> */}
-    </View>
+        <Text style={styles.loadFoto}>Завантажте фото</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Name"
+          onChangeText={setName}
+        ></TextInput>
+        <TextInput
+          style={styles.input}
+          placeholder="Location"
+          onChangeText={setNameLocation}
+        ></TextInput>
+        <TouchableOpacity style={styles.button} onPress={onPublish}>
+          <Text style={styles.textBtn}>Опублікувати</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -113,35 +102,60 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
   camera: {
-    flex: 1,
-  },
-  addFoto: {
-    marginTop: 32,
-    width: "100%",
     height: 234,
+    width: "100%",
     borderRadius: 8,
-    backgroundColor: "#F6F6F6",
-  },
-  input: {
     marginTop: 32,
-    marginBottom: 16,
+  },
+
+  loadFoto: {
+    color: "#BDBDBD",
     fontSize: 16,
+    marginBottom: 32,
+  },
+  // addFoto: {
+  //   marginTop: 32,
+  //   width: "100%",
+  //   height: 234,
+  //   borderRadius: 8,
+  //   backgroundColor: "#F6F6F6",
+  // },
+  input: {
+    // marginTop: 32,
+    // marginBottom: 16,
+    // fontSize: 16,
     height: 50,
-    borderBottomColor: "#E8E8E8",
+    // borderBottomColor: "#E8E8E8",
+    // borderBottomWidth: 1,
+    // borderRadius: 8,
+    // backgroundColor: "white",
+    // borderStyle: "solid",
+    // paddingLeft: 16,
+    // paddingBottom: 15,
+    // paddingTop: 16,
+    // color: "black",
+
+    marginTop: 10,
+    paddingBottom: 7,
     borderBottomWidth: 1,
-    borderRadius: 8,
-    backgroundColor: "white",
-    borderStyle: "solid",
-    paddingLeft: 16,
-    paddingBottom: 15,
-    paddingTop: 16,
-    color: "black",
+    borderBottomColor: "#bdbdbd",
+    fontSize: 16,
+    lineHeight: 19,
   },
 
   button: {
-    width: 100,
     height: 50,
-    backgroundColor: "orange",
+    marginTop: 32,
+    marginBottom: 16,
+    alignItems: "center",
+    backgroundColor: "#ff6c00",
+    paddingVertical: 10,
+    paddingHorizontal: 80,
+    borderRadius: 100,
+  },
+  textBtn: {
+    marginTop: 3,
+    color: "#fff",
   },
   fotoIcon: {
     position: "relative",

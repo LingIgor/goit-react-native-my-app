@@ -22,7 +22,16 @@ export default function App() {
         <MainStack.Screen name="Registration" component={RegistrationScreen} />
         <MainStack.Screen name="Login" component={Login} />
         <MainStack.Screen name="Home" component={Home} />
-        <MainStack.Screen name="Comments" component={CommentsScreen} />
+        <MainStack.Screen
+          name="Comments"
+          component={CommentsScreen}
+          options={{
+            headerShown: true,
+            title: "Коментарі",
+            headerBackTitleVisible: false,
+            headerTintColor: "#212121",
+          }}
+        />
         <MainStack.Screen name="Map" component={MapScreen} />
       </MainStack.Navigator>
     </NavigationContainer>

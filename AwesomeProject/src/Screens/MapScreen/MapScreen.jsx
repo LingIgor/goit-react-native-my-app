@@ -7,6 +7,7 @@ export const MapScreen = () => {
   const navigation = useNavigation();
   const { params } = useRoute();
   console.log(params.latitude);
+  console.log(params.longitude);
 
   return (
     <View style={styles.container}>
@@ -14,9 +15,8 @@ export const MapScreen = () => {
         style={styles.mapStyle}
         region={{ latitude: params.latitude, longitude: params.longitude }}
         mapType="standard"
-        minZoomLevel={15}
+        minZoomLevel={5}
         onMapReady={() => console.log("Map is ready")}
-        onRegionChange={() => console.log("Region change")}
       >
         <Marker
           title="I am here"
