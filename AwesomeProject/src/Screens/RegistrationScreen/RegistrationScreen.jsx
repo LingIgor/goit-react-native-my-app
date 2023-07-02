@@ -11,33 +11,38 @@ import {
   Keyboard,
   Alert,
 } from "react-native";
+import { authSignUp } from "../../redux/auth/authOperations";
 
 import BackPhoto from "../../images/PhotoBG.png";
 import AddIcon from "../../images/add.png";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+
+const initialState = {
+  email: "",
+  password: "",
+  username: "",
+};
 
 export const RegistrationScreen = () => {
-  const [login, setLogin] = useState("");
-  const [mail, setMail] = useState("");
-  const [pass, setPass] = useState("");
+  // const [login, setLogin] = useState("");
+  // const [mail, setMail] = useState("");
+  // const [pass, setPass] = useState("");
+
+  const [state, setState] = useState(initialState);
+
   const navigation = useNavigation();
 
-  const onRegistr = () => {
-    console.log(
-      "Ви ввели:",
-      `Login: ${login}
-      Email: ${mail}
-      Password: ${pass}`
-    );
-  };
+  const dispatch = useDispatch();
 
-  const registr = () => {
-    if (login === "" || mail === "" || pass === "") {
-      Alert.alert("some of the fields are not filled");
-      return;
+  const handleSubmit = async () => {
+    try {
+      await dispatch(authSignUp(state)).unwrap();
+      console.log(state);
+    } catch (e) {
+      console.error(e);
     }
-    navigation.navigate("Home", { screen: "Posts" });
   };
 
   return (
@@ -52,26 +57,32 @@ export const RegistrationScreen = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Логін"
-                value={login}
-                onChangeText={setLogin}
+                value={state.username}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, username: value }))
+                }
               ></TextInput>
               <TextInput
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
-                value={mail}
-                onChangeText={setMail}
+                value={state.email}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, email: value }))
+                }
               ></TextInput>
               <TextInput
                 style={styles.input}
                 placeholder="Пароль"
-                value={pass}
-                onChangeText={setPass}
+                value={state.password}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
               ></TextInput>
             </View>
             <TouchableOpacity style={styles.shown}>
               <Text style={styles.logIn}>Показати</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={registr}>
+            <TouchableOpacity style={styles.button} onPress={handleSubmit}>
               <Text style={styles.registration}>Зареєструватись</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate("Login")}>
