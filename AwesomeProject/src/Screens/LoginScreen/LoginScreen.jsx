@@ -16,27 +16,33 @@ import BackPhoto from "../../images/PhotoBG.png";
 import AddIcon from "../../images/add.png";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import { authSingIn } from "../../redux/auth/authOperations";
+import { useDispatch, useSelector } from "react-redux";
+
+const initialState = {
+  email: "",
+  password: "",
+};
 
 export const Login = () => {
-  const [mail, setMail] = useState("");
-  const [pass, setPass] = useState("");
+  const [state, setState] = useState(initialState);
+  const loggedIn = useSelector((state) => state.auth.isLoggedIn);
+
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const onLogin = () => {
-    console.log(
-      "Ви ввели:",
-      `
-      Email: ${mail}
-      Password: ${pass}`
-    );
-  };
-
-  const registr = () => {
-    if (mail === "" || pass === "") {
+  const registr = async () => {
+    if (state.email === "" || state.password === "") {
       Alert.alert("some of the fields are not filled");
       return;
     }
-    navigation.navigate("Home", { screen: "Posts" });
+    try {
+      await dispatch(authSingIn(state)).unwrap();
+    } catch (e) {
+      // Alert.alert("registration please");
+      // navigation.navigate("Registration");
+      console.error(e);
+    }
   };
 
   return (
@@ -49,14 +55,18 @@ export const Login = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Адреса електронної пошти"
-                value={mail}
-                onChangeText={setMail}
+                value={state.email}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, email: value }))
+                }
               ></TextInput>
               <TextInput
                 style={styles.input}
                 placeholder="Пароль"
-                value={pass}
-                onChangeText={setPass}
+                value={state.password}
+                onChangeText={(value) =>
+                  setState((prevState) => ({ ...prevState, password: value }))
+                }
               ></TextInput>
             </View>
             <TouchableOpacity style={styles.shown}>

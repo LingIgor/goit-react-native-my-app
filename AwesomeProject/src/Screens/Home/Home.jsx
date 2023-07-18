@@ -6,10 +6,15 @@ import { CreatePostsScreen } from "../CreatePostsScreen/CreatePostsScreen";
 import { ProfileScreen } from "../ProfileScreen/ProfileScreen";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons, Feather } from "@expo/vector-icons";
+import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../../redux/auth/authOperations";
+import { useEffect } from "react";
 const Tabs = createBottomTabNavigator();
 
 export const Home = () => {
+  const { auth } = useSelector((state) => state);
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const screenOptions = {
     headerStyle: {
@@ -20,6 +25,20 @@ export const Home = () => {
     },
     tabBarShowLabel: false,
   };
+
+  const handleLogOut = () => {
+    dispatch(logOut());
+  };
+
+  // useEffect(() => {
+  //   if (auth.isLoggedIn) {
+  //     navigation.navigate("Home");
+  //     console.log("must go to HOme..!??");
+  //     return;
+  //   }
+
+  //   console.log("what are you doing??");
+  // });
 
   return (
     <Tabs.Navigator
@@ -34,7 +53,7 @@ export const Home = () => {
         options={{
           title: "Публікації",
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <TouchableOpacity onPress={handleLogOut}>
               <Feather name="log-out" size={24} color={"grey"} />
             </TouchableOpacity>
           ),

@@ -17,7 +17,7 @@ import BackPhoto from "../../images/PhotoBG.png";
 import AddIcon from "../../images/add.png";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialState = {
   email: "",
@@ -31,15 +31,22 @@ export const RegistrationScreen = () => {
   // const [pass, setPass] = useState("");
 
   const [state, setState] = useState(initialState);
+  const loggedIn = useSelector((state) => state.auth.uid);
 
   const navigation = useNavigation();
 
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
+    if (state.email === "" || state.password === "" || state.username === "") {
+      Alert.alert("some of the fields are not filled");
+      return;
+    }
     try {
       await dispatch(authSignUp(state)).unwrap();
-      console.log(state);
+      if (loggedIn !== false) {
+        navigation.navigate("Home", { screen: "Posts" });
+      }
     } catch (e) {
       console.error(e);
     }
