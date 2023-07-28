@@ -18,6 +18,8 @@ import AddIcon from "../../images/add.png";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
+import { auth } from "../../firebase/config";
+import storage from "../../../storage";
 
 const initialState = {
   email: "",
@@ -44,9 +46,13 @@ export const RegistrationScreen = () => {
     }
     try {
       await dispatch(authSignUp(state)).unwrap();
-      if (loggedIn !== false) {
-        navigation.navigate("Home", { screen: "Posts" });
-      }
+      storage.save({
+        key: "login",
+        data: {
+          user: auth.currentUser,
+        },
+      });
+      console.log(storage);
     } catch (e) {
       console.error(e);
     }
@@ -84,6 +90,7 @@ export const RegistrationScreen = () => {
                 onChangeText={(value) =>
                   setState((prevState) => ({ ...prevState, password: value }))
                 }
+                // secureTextEntry={watchPassword.secureTextEntry}
               ></TextInput>
             </View>
             <TouchableOpacity style={styles.shown}>

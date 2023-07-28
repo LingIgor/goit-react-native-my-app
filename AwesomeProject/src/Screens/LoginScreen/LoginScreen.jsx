@@ -18,6 +18,8 @@ import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { authSingIn } from "../../redux/auth/authOperations";
 import { useDispatch, useSelector } from "react-redux";
+import { auth } from "../../firebase/config";
+import storage from "../../../storage";
 
 const initialState = {
   email: "",
@@ -38,6 +40,12 @@ export const Login = () => {
     }
     try {
       await dispatch(authSingIn(state)).unwrap();
+      storage.save({
+        key: "login",
+        data: {
+          user: auth.currentUser,
+        },
+      });
     } catch (e) {
       // Alert.alert("registration please");
       // navigation.navigate("Registration");

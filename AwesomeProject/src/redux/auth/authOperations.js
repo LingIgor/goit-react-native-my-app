@@ -1,13 +1,12 @@
 import { auth } from "../../firebase/config";
 import {
   createUserWithEmailAndPassword,
-  onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
   updateProfile,
 } from "firebase/auth";
 
-import { createAsyncThunk, isRejectedWithValue } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const authSignUp = createAsyncThunk(
   "auth/signUp",
@@ -21,7 +20,6 @@ export const authSignUp = createAsyncThunk(
       return {
         displayName: auth.currentUser.displayName,
         email: auth.currentUser.email,
-        uid: auth.currentUser.uid,
       };
     } catch (e) {
       return rejectWithValue(e.message);
@@ -36,9 +34,8 @@ export const authSingIn = createAsyncThunk(
       const user = await signInWithEmailAndPassword(auth, email, password);
 
       return {
-        displayName: auth.currentUser.displayName,
-        email: auth.currentUser.email,
-        uid: auth.currentUser.uid,
+        displayName: user._tokenResponse.displayName,
+        email: user._tokenResponse.email,
       };
     } catch (e) {
       return rejectWithValue(e.message);
@@ -46,19 +43,12 @@ export const authSingIn = createAsyncThunk(
   }
 );
 
-// export const authSingOut = () => async (dispatch, getState) => {
-//   await onAuthStateChanged(auth, user => {
-//     if (user) {
-//       dispatch(authSingIn(user.displayName, user,))
-//     }
-//   })
-// }
-
 export const logOut = createAsyncThunk(
   "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
       await signOut(auth);
+      // storage.remove({ key: "login" });
     } catch (error) {
       return rejectWithValue(error.message);
     }

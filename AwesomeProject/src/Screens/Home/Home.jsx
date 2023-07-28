@@ -9,6 +9,7 @@ import { Ionicons, Feather } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../redux/auth/authOperations";
 import { useEffect } from "react";
+import storage from "../../../storage";
 const Tabs = createBottomTabNavigator();
 
 export const Home = () => {
@@ -28,17 +29,8 @@ export const Home = () => {
 
   const handleLogOut = () => {
     dispatch(logOut());
+    console.log(auth);
   };
-
-  // useEffect(() => {
-  //   if (auth.isLoggedIn) {
-  //     navigation.navigate("Home");
-  //     console.log("must go to HOme..!??");
-  //     return;
-  //   }
-
-  //   console.log("what are you doing??");
-  // });
 
   return (
     <Tabs.Navigator
