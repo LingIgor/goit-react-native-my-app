@@ -13,6 +13,7 @@ import * as Location from "expo-location";
 import { Feather } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+import auth from "../../firebase/config";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -22,6 +23,8 @@ export const CreatePostsScreen = () => {
   const [image, setImage] = useState(null);
   const [name, setName] = useState("");
   const [nameLocation, setNameLocation] = useState("");
+  const [uId] = useState(auth);
+  console.log(uId);
 
   useEffect(() => {
     (async () => {
@@ -55,7 +58,7 @@ export const CreatePostsScreen = () => {
 
     let location = await Location.getCurrentPositionAsync({});
 
-    const post = { image, name, nameLocation, location };
+    const post = { image, name, nameLocation, location, uId };
     navigation.navigate("Home", {
       screen: "Posts",
       params: post,

@@ -21,34 +21,37 @@ export const PostsScreen = () => {
     }
   }, [params]);
 
-  const oneImage = ({ item }) => (
-    <View>
-      <Image style={styles.img} source={{ uri: item.image }}></Image>
-      <Text style={styles.nameText}>{item.name}</Text>
-      <View style={styles.iconBar}>
-        <TouchableOpacity
-          style={styles.iconLoc}
-          onPress={() => navigation.navigate("Comments", { uri: item.image })}
-        >
-          <Feather name="message-circle" size={24} color={"#bdbdbd"} />
-          <Text>0</Text>
-        </TouchableOpacity>
+  const oneImage = ({ item }) => {
+    console.log(item);
+    return (
+      <View>
+        <Image style={styles.img} source={{ uri: item.image }}></Image>
+        <Text style={styles.nameText}>{item.name}</Text>
+        <View style={styles.iconBar}>
+          <TouchableOpacity
+            style={styles.iconLoc}
+            onPress={() => navigation.navigate("Comments", { uri: item.image })}
+          >
+            <Feather name="message-circle" size={24} color={"#bdbdbd"} />
+            <Text>0</Text>
+          </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.iconLoc}
-          onPress={() =>
-            navigation.navigate("Map", {
-              latitude: item.location.coords.latitude,
-              longitude: item.location.coords.longitude,
-            })
-          }
-        >
-          <Feather name="map-pin" size={24} color="#bdbdbd" />
-          <Text style={styles.nameLocationText}>{item.nameLocation}</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.iconLoc}
+            onPress={() =>
+              navigation.navigate("Map", {
+                latitude: item.location.coords.latitude,
+                longitude: item.location.coords.longitude,
+              })
+            }
+          >
+            <Feather name="map-pin" size={24} color="#bdbdbd" />
+            <Text style={styles.nameLocationText}>{item.nameLocation}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>

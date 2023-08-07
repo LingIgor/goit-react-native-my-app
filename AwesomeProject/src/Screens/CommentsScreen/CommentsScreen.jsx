@@ -10,9 +10,11 @@ import {
 } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign, Feather } from "@expo/vector-icons";
+import React from "react";
 
-export const CommentsScreen = () => {
+export const CommentsScreen = ({ route }) => {
   const { params } = useRoute();
+  console.log(route);
   const navigation = useNavigation();
 
   return (
