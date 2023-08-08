@@ -9,38 +9,39 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { useDispatch } from 'react-redux';
+import { useDispatch } from "react-redux";
 import { postsList } from "../../redux/posts/postOperations";
+import { auth } from "../../firebase/config";
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
   const { params } = useRoute();
   const [collection, setCollection] = useState([]);
-
   const dispatch = useDispatch();
 
+  console.log(auth.lastNotifiedUid);
 
   const fetchData = async () => {
     try {
       const data = await dispatch(postsList());
 
-      const sortedPosts = [...data.payload].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-      
+      const sortedPosts = [...data.payload].sort(
+        (a, b) => new Date(b.created_at) - new Date(a.created_at)
+      );
+
       setCollection(sortedPosts);
     } catch (error) {
-      console.error('Failed to fetch posts:', error);
+      console.error("Failed to fetch posts:", error);
     }
   };
 
-
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       fetchData();
     });
 
     return unsubscribe;
   }, [navigation]);
-  
 
   // useEffect(() => {
   //   if (params) {
@@ -57,7 +58,9 @@ export const PostsScreen = () => {
         <View style={styles.iconBar}>
           <TouchableOpacity
             style={styles.iconLoc}
-            onPress={() => navigation.navigate("Comments", { uri: item.image, id: item.id })}
+            onPress={() =>
+              navigation.navigate("Comments", { uri: item.image, id: item.id })
+            }
           >
             <Feather name="message-circle" size={24} color={"#bdbdbd"} />
             <Text>0</Text>

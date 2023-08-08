@@ -11,11 +11,11 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Feather } from "@expo/vector-icons";
-import { useEffect, useState} from "react";
-import useDispatch from "react-redux"
+import { useEffect, useState } from "react";
+import useDispatch from "react-redux";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { postsList, createPost } from "../../redux/posts/postOperations";
-import {auth} from "../../firebase/config";
+import { auth } from "../../firebase/config";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -23,19 +23,48 @@ export const CreatePostsScreen = () => {
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [image, setImage] = useState(null);
-  const [name, setName] = useState("");
-  const [nameLocation, setNameLocation] = useState("");
-  const [uId] = useState(auth);
+  const [name, setName] = useState(null);
+  const [nameLocation, setNameLocation] = useState(null);
+  const [uId] = useState(auth.lastNotifiedUid);
   const dispatch = useDispatch();
-  console.log(uId);
+
+  const saveFoto = async () => {
+    if (cameraRef) {
+      // const options = { quality: 0, base64: true };
+      const { uri } = await cameraRef.takePictureAsync();
+      await MediaLibrary.requestPermissionsAsync();
+      setImage(uri);
+    }
+  };
+
+  const onPublish = async () => {
+    if (!image) return;
+    try {
+      let location = await Location.getCurrentPositionAsync({});
+
+      const post = { image, name, nameLocation, location, uId };
+
+      await dispatch(createPost(post)).unwrap();
+
+      setImage(null);
+      setNameLocation(null);
+      setName(null);
+
+      navigation.navigate("Home", {
+        screen: "Posts",
+      });
+
+      postsList();
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
       await MediaLibrary.requestPermissionsAsync();
-
       setHasPermission(status === "granted");
-
       let locationPermission =
         await Location.requestForegroundPermissionsAsync();
       if (locationPermission.status !== "granted") {
@@ -47,37 +76,6 @@ export const CreatePostsScreen = () => {
   if (!hasPermission) {
     return <Text>No access to camera</Text>;
   }
-
-  const saveFoto = async () => {
-    if (cameraRef) {
-      // const options = { quality: 0, base64: true };
-      const { uri } = await cameraRef.takePictureAsync();
-      await MediaLibrary.requestPermissionsAsync();
-      setImage(uri);
-    }
-  };
-
-
-  const onPublish = async () => {
-    if (!image) return;
-
-    let location = await Location.getCurrentPositionAsync({});
-
-    const post = { image, name, nameLocation, location, uId };
-
-    await dispatch(createPost(post)).unwrap();
-    navigation.navigate("Home", {
-      screen: "Posts",
-      params: post,
-    });
-    
-
-    setImage(null);
-    setNameLocation("");
-    setName("");
-
-    postsList();
-  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
