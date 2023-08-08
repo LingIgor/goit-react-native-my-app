@@ -11,9 +11,11 @@ import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Feather } from "@expo/vector-icons";
-import { useEffect, useState } from "react";
+import { useEffect, useState} from "react";
+import useDispatch from "react-redux"
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import auth from "../../firebase/config";
+import { postsList, createPost } from "../../redux/posts/postOperations";
+import {auth} from "../../firebase/config";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -24,6 +26,7 @@ export const CreatePostsScreen = () => {
   const [name, setName] = useState("");
   const [nameLocation, setNameLocation] = useState("");
   const [uId] = useState(auth);
+  const dispatch = useDispatch();
   console.log(uId);
 
   useEffect(() => {
@@ -47,11 +50,13 @@ export const CreatePostsScreen = () => {
 
   const saveFoto = async () => {
     if (cameraRef) {
+      // const options = { quality: 0, base64: true };
       const { uri } = await cameraRef.takePictureAsync();
       await MediaLibrary.requestPermissionsAsync();
       setImage(uri);
     }
   };
+
 
   const onPublish = async () => {
     if (!image) return;
@@ -59,13 +64,19 @@ export const CreatePostsScreen = () => {
     let location = await Location.getCurrentPositionAsync({});
 
     const post = { image, name, nameLocation, location, uId };
+
+    await dispatch(createPost(post)).unwrap();
     navigation.navigate("Home", {
       screen: "Posts",
       params: post,
     });
+    
+
     setImage(null);
     setNameLocation("");
     setName("");
+
+    postsList();
   };
 
   return (
