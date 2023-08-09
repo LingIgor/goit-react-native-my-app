@@ -48,7 +48,7 @@ export const logOut = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await signOut(auth);
-      // storage.remove({ key: "login" });
+      
     } catch (error) {
       return rejectWithValue(error.message);
     }

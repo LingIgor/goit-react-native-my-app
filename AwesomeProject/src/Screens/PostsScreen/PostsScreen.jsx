@@ -1,5 +1,8 @@
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import {
+  useNavigation,
+  useFocusEffect,
+} from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
   View,
@@ -9,45 +12,22 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import { useDispatch } from "react-redux";
-import { postsList } from "../../redux/posts/postOperations";
-import { auth } from "../../firebase/config";
+import { useDispatch, useSelector } from "react-redux";
+import {selectPosts} from "../../redux/posts/postSelectors"
+import { getAllPosts } from '../../redux/posts/postOperations';
+
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
-  const { params } = useRoute();
-  const [collection, setCollection] = useState([]);
+  const collection = useSelector(selectPosts);
   const dispatch = useDispatch();
 
-  console.log(auth.lastNotifiedUid);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getAllPosts()).unwrap();
+    }, [dispatch])
+  );
 
-  const fetchData = async () => {
-    try {
-      const data = await dispatch(postsList());
-
-      const sortedPosts = [...data.payload].sort(
-        (a, b) => new Date(b.created_at) - new Date(a.created_at)
-      );
-
-      setCollection(sortedPosts);
-    } catch (error) {
-      console.error("Failed to fetch posts:", error);
-    }
-  };
-
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      fetchData();
-    });
-
-    return unsubscribe;
-  }, [navigation]);
-
-  // useEffect(() => {
-  //   if (params) {
-  //     setCollection((prev) => [params, ...prev]);
-  //   }
-  // }, [params]);
 
   const oneImage = ({ item }) => {
     console.log(item);

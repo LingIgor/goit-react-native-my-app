@@ -1,84 +1,153 @@
+import React, { useState, useCallback } from 'react';
 import {
   StyleSheet,
   View,
   Text,
   Image,
+  FlatList,
   TextInput,
   TouchableOpacity,
-  Keyboard,
-  TouchableWithoutFeedback,
-} from "react-native";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import { AntDesign, Feather } from "@expo/vector-icons";
-import React from "react";
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
+import { auth } from '../../firebase/config';
+import { useDispatch, useSelector } from 'react-redux';
+import { addComment, getAllComments } from '../../redux/comments/commentsOperations';
+import { selectComments } from '../../redux/comments/commentsSelectors';
 
-export const CommentsScreen = ({ route }) => {
-  const { params } = useRoute();
-  console.log(route);
-  const navigation = useNavigation();
+export default function CommentsScreen() {
+  const route = useRoute();
+  const dispatch = useDispatch();
+  const allComments = useSelector(selectComments);
+
+  const [comment, setComment] = useState('');
+  const { uri, id } = route.params;
+
+  const onPressCommentBtn = async () => {
+    if (comment)
+      try {
+        const { displayName, uid } = auth.currentUser;
+        const creationTime = Date.now();
+        const postId = id;
+        const newComment = { comment, displayName, uid, postId, creationTime };
+        await dispatch(addComment(newComment)).unwrap();
+
+        setComment('');
+      } catch (error) {
+        console.log(error.message);
+      }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(getAllComments()).unwrap();
+    }, [dispatch])
+  );
+
+  const filteredCommentsByPost = allComments.filter(item => item.postId === id);
+  const sortedComments = [...filteredCommentsByPost].sort(
+    (firstComment, secondComment) =>
+      firstComment.creationTime - secondComment.creationTime
+  );
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Image style={styles.img} source={{ uri: params.uri }}></Image>
-        <TextInput placeholder="Коментувати..." style={styles.input} />
-
-        <TouchableOpacity style={styles.inputBtn}>
-          <AntDesign name="arrowup" size={20} color="#FFFFFF" />
+    <View style={styles.container}>
+      <View>
+        <Image source={{ uri }} style={styles.photo} />
+        <View style={styles.listWrap}>
+          <FlatList
+            data={sortedComments}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={({ item }) => (
+              <>
+                <Text style={styles.userName}>{item.displayName}</Text>
+                <View style={styles.commentWrap}>
+                  <Text style={styles.commentText}>{item.comment}</Text>
+                </View>
+              </>
+            )}
+          />
+        </View>
+      </View>
+      <View style={styles.inputWrap}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+        >
+          <TextInput
+            placeholder="Коментувати..."
+            style={styles.input}
+            value={comment}
+            onChangeText={setComment}
+          />
+        </KeyboardAvoidingView>
+        <TouchableOpacity style={styles.inputBtn} onPress={onPressCommentBtn}>
+          <AntDesign name="arrowup" size={24} color="#fff" />
         </TouchableOpacity>
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
+    paddingHorizontal: 16,
+    paddingTop: 10,
     flex: 1,
-    alignItems: "center",
-    backgroundColor: "#fff",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    backgroundColor: '#fff',
   },
-  addFoto: {
-    // marginTop: 32,
-    width: "100%",
-    height: 234,
+  photo: {
+    width: 288,
+    height: 180,
+    marginBottom: 8,
     borderRadius: 8,
-    backgroundColor: "white",
   },
-  img: {
-    marginTop: 32,
-    width: "100%",
-    height: 234,
-    resizeMode: "stretch",
+  listWrap: {
+    marginTop: 15,
+    height: 220,
   },
-  inputBtn: {
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: 23,
-    right: 30,
-    width: 34,
-    height: 34,
-    backgroundColor: "#ff6c00",
-    borderRadius: 50,
+  commentWrap: {
+    padding: 10,
+    marginBottom: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    borderRadius: 4,
   },
-
-  input: {
-    position: "absolute",
-    bottom: 0,
-    height: 50,
-    marginTop: 10,
-    marginBottom: 16,
-    padding: 15,
-    borderWidth: 1,
-    // borderBottomColor: "#bdbdbd",
+  userName: { marginBottom: 5 },
+  commentText: {
     fontSize: 16,
     lineHeight: 19,
-    borderRadius: 25,
-    width: 343,
-    borderColor: "#E8E8E8",
-    backgroundColor: "#F6F6F6",
+  },
+  inputWrap: {
+    position: 'relative',
+    width: '100%',
+    marginTop: 15,
+  },
+  input: {
+    width: '100%',
+    height: 40,
+    justifyContent: 'center',
+    paddingVertical: 8,
+    paddingLeft: 16,
+    borderColor: '#e8e8e8',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRadius: 50,
+    backgroundColor: '#f6f6f6',
+    fontSize: 16,
+    lineHeight: 19,
+  },
+  inputBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 5,
+    width: 24,
+    height: 24,
+    backgroundColor: '#ff6c00',
+    borderRadius: 50,
   },
 });
