@@ -8,7 +8,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { auth } from "../../firebase/config";
+import { getAuth } from "firebase/auth";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import BgImage from "../../images/PhotoBG2.jpg";
 import { selectUserPosts } from "../../redux/posts/postSelectors";
@@ -16,12 +16,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllPosts } from "../../redux/posts/postOperations";
 import { Feather } from "@expo/vector-icons";
 import { logOut } from "../../redux/auth/authOperations";
+import app from "../../../firebase/config";
 
 export const ProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const userPosts = useSelector(selectUserPosts);
 
+  const auth = getAuth(app);
   const user = auth.currentUser;
 
   useFocusEffect(

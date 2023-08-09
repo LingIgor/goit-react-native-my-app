@@ -20,8 +20,9 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { getAuth } from "firebase/auth";
 import storage from "../../../storage";
+import app from "../../../firebase/config";
 
-const auth = getAuth();
+const auth = getAuth(app);
 
 const initialState = {
   email: "",

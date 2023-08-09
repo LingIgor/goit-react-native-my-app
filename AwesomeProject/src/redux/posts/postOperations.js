@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getFirestore } from "firebase/firestore";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import app from "../../firebase/config";
+import app from "../../../firebase/config";
 
 const db = getFirestore(app);
 

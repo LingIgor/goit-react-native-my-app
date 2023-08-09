@@ -19,6 +19,7 @@ import {
   getAllComments,
 } from "../../redux/comments/commentsOperations";
 import { selectComments } from "../../redux/comments/commentsSelectors";
+import app from "../../../firebase/config";
 
 export const CommentsScreen = () => {
   const route = useRoute();
@@ -31,7 +32,7 @@ export const CommentsScreen = () => {
   const onPressCommentBtn = async () => {
     if (comment)
       try {
-        const { displayName, uid } = getAuth().currentUser;
+        const { displayName, uid } = getAuth(app).currentUser;
         const creationTime = Date.now();
         const postId = id;
         const newComment = { comment, displayName, uid, postId, creationTime };

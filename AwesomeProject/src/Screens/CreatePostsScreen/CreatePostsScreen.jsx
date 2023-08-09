@@ -16,6 +16,7 @@ import useDispatch from "react-redux";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { addPost } from "../../redux/posts/postOperations";
 import { getAuth } from "firebase/auth";
+import app from "../../../firebase/config";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -49,7 +50,8 @@ export const CreatePostsScreen = () => {
   const saveFoto = async () => {
     if (cameraRef) {
       const { uri } = await cameraRef.takePictureAsync();
-      await MediaLibrary.requestPermissionsAsync();
+      // await MediaLibrary.requestPermissionsAsync(uri);
+      await MediaLibrary.createAssetAsync(uri);
       setImage(uri);
     }
   };
@@ -59,8 +61,8 @@ export const CreatePostsScreen = () => {
 
     try {
       let location = await Location.getCurrentPositionAsync({});
-      const { uid, displayName } = getAuth().currentUser;
-      const post = { uid, photo, location, name, nameLocation, displayName };
+      const { uid, displayName } = getAuth(app).currentUser;
+      const post = { uid, image, location, name, nameLocation, displayName };
 
       await dispatch(addPost(post)).unwrap();
 

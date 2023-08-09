@@ -1,5 +1,5 @@
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
   View,
@@ -25,7 +25,7 @@ export const PostsScreen = () => {
   );
 
   const oneImage = ({ item }) => {
-    console.log(item);
+    console.log(item.id);
     return (
       <View>
         <Image style={styles.img} source={{ uri: item.image }}></Image>
