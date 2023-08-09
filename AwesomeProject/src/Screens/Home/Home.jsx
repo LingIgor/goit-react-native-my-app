@@ -8,12 +8,14 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons, Feather } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logOut } from "../../redux/auth/authOperations";
-import { useEffect } from "react";
-import storage from "../../../storage";
+// import { useEffect } from "react";
+// import { getAuth } from "firebase/auth";
+
+//   const auth = getAuth();
+
 const Tabs = createBottomTabNavigator();
 
 export const Home = () => {
-  const { auth } = useSelector((state) => state);
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -29,7 +31,6 @@ export const Home = () => {
 
   const handleLogOut = () => {
     dispatch(logOut());
-    console.log(auth);
   };
 
   return (

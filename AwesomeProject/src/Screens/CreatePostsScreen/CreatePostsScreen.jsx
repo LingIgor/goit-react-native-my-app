@@ -7,15 +7,15 @@ import {
   Image,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Camera} from "expo-camera";
+import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Feather } from "@expo/vector-icons";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import useDispatch from "react-redux";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { addPost } from "../../redux/posts/postOperations";
-import { auth } from "../../firebase/config";
+import { getAuth } from "firebase/auth";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
@@ -23,14 +23,11 @@ export const CreatePostsScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [image, setImage] = useState('');
-  const [name, setName] = useState('');
+  const [image, setImage] = useState("");
+  const [name, setName] = useState("");
   const [nameLocation, setNameLocation] = useState(null);
-  
+
   const dispatch = useDispatch();
-
-
-
 
   useEffect(() => {
     (async () => {
@@ -49,11 +46,8 @@ export const CreatePostsScreen = () => {
     return <Text>No access to camera</Text>;
   }
 
-
-
   const saveFoto = async () => {
     if (cameraRef) {
-    
       const { uri } = await cameraRef.takePictureAsync();
       await MediaLibrary.requestPermissionsAsync();
       setImage(uri);
@@ -61,28 +55,23 @@ export const CreatePostsScreen = () => {
   };
 
   const onPublish = async () => {
-    if (!image) return;
+    if (!photo) return;
+
     try {
       let location = await Location.getCurrentPositionAsync({});
-      const { uid, displayName } = auth.currentUser;
-      const post = { image, name, nameLocation, location, uid, displayName };
+      const { uid, displayName } = getAuth().currentUser;
+      const post = { uid, photo, location, name, nameLocation, displayName };
 
       await dispatch(addPost(post)).unwrap();
-      navigation.navigate("Home", {
-        screen: "Posts",
-        post,
-      });
 
-      setImage('');
-      setNameLocation('');
-      setName(null);
-
-    } catch (e) {
-      console.log(e);
+      navigation.navigate("Posts", { post });
+      setName("");
+      setNameLocation("");
+      setPhoto(null);
+    } catch (error) {
+      console.log(error.message);
     }
   };
-
- 
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

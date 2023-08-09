@@ -1,7 +1,4 @@
-import {
-  useNavigation,
-  useFocusEffect,
-} from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import React, { useEffect, useState, useCallback } from "react";
 import { Feather } from "@expo/vector-icons";
 import {
@@ -13,9 +10,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {selectPosts} from "../../redux/posts/postSelectors"
-import { getAllPosts } from '../../redux/posts/postOperations';
-
+import { selectPosts } from "../../redux/posts/postSelectors";
+import { getAllPosts } from "../../redux/posts/postOperations";
 
 export const PostsScreen = () => {
   const navigation = useNavigation();
@@ -28,18 +24,18 @@ export const PostsScreen = () => {
     }, [dispatch])
   );
 
-
   const oneImage = ({ item }) => {
     console.log(item);
     return (
       <View>
         <Image style={styles.img} source={{ uri: item.image }}></Image>
         <Text style={styles.nameText}>{item.name}</Text>
+        <Text>{item.displayName}</Text>
         <View style={styles.iconBar}>
           <TouchableOpacity
             style={styles.iconLoc}
             onPress={() =>
-              navigation.navigate("Comments", { uri: item.image, id: item.id })
+              navigation.navigate("Comments", { uri: item.photo, id: item.id })
             }
           >
             <Feather name="message-circle" size={24} color={"#bdbdbd"} />
@@ -66,7 +62,11 @@ export const PostsScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.addFoto}>
-        <FlatList data={collection} renderItem={oneImage} />
+        <FlatList
+          data={collection}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={oneImage}
+        />
       </View>
 
       {/* <Text onPress={console.log(collection)}>clock</Text> */}

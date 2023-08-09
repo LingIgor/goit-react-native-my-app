@@ -1,4 +1,4 @@
-import { auth } from "../../firebase/config";
+import { getAuth } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,6 +7,8 @@ import {
 } from "firebase/auth";
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
+
+const auth = getAuth();
 
 export const authSignUp = createAsyncThunk(
   "auth/signUp",
@@ -20,6 +22,7 @@ export const authSignUp = createAsyncThunk(
       return {
         displayName: auth.currentUser.displayName,
         email: auth.currentUser.email,
+        uid: auth.currentUser.uid,
       };
     } catch (e) {
       return rejectWithValue(e.message);
@@ -34,8 +37,9 @@ export const authSingIn = createAsyncThunk(
       const user = await signInWithEmailAndPassword(auth, email, password);
 
       return {
-        displayName: user._tokenResponse.displayName,
-        email: user._tokenResponse.email,
+        displayName: auth.currentUser.displayName,
+        email: auth.currentUser.email,
+        uid: auth.currentUser.uid,
       };
     } catch (e) {
       return rejectWithValue(e.message);
@@ -48,7 +52,6 @@ export const logOut = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       await signOut(auth);
-      
     } catch (error) {
       return rejectWithValue(error.message);
     }

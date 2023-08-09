@@ -5,6 +5,7 @@ const initialState = {
   username: null,
   email: null,
   isLoggedIn: false,
+  uid: null,
 };
 
 export const authSlice = createSlice({
@@ -16,16 +17,19 @@ export const authSlice = createSlice({
         state.username = payload.username;
         state.email = payload.email;
         state.isLoggedIn = true;
+        state.uid = payload.uid;
       })
       .addCase(authSingIn.fulfilled, (state, { payload }) => {
         state.username = payload.username;
         state.email = payload.email;
         state.isLoggedIn = true;
+        state.uid = payload.uid;
       })
       .addCase(logOut.fulfilled, (state, { payload }) => {
         state.username = null;
         state.email = null;
         state.isLoggedIn = false;
+        state.uid = null;
       });
   },
 });

@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import {
   persistReducer,
   persistStore,
@@ -11,20 +11,20 @@ import {
 } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { authReducer } from "./auth/authSlice";
-import { PostsSliceReducer } from "./posts/slice";
+import { postsReducer } from "./posts/slice";
+import { commentsReducer } from "./comments/commentsSlice";
 
 const persistConfig = {
   key: "auth",
   storage: AsyncStorage,
 };
 
-const rootReducer = combineReducers({
-  auth: persistReducer(persistConfig, authReducer),
-  posts: PostsSliceReducer,
-});
-
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: {
+    auth: persistReducer(persistConfig, authReducer),
+    posts: postsReducer,
+    comments: commentsReducer,
+  },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -9,32 +9,35 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
-} from 'react-native';
-import { useRoute, useFocusEffect } from '@react-navigation/native';
-import { AntDesign } from '@expo/vector-icons';
-import { auth } from '../../firebase/config';
-import { useDispatch, useSelector } from 'react-redux';
-import { addComment, getAllComments } from '../../redux/comments/commentsOperations';
-import { selectComments } from '../../redux/comments/commentsSelectors';
+} from "react-native";
+import { useRoute, useFocusEffect } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
+import { getAuth } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addComment,
+  getAllComments,
+} from "../../redux/comments/commentsOperations";
+import { selectComments } from "../../redux/comments/commentsSelectors";
 
-export default function CommentsScreen() {
+export const CommentsScreen = () => {
   const route = useRoute();
   const dispatch = useDispatch();
   const allComments = useSelector(selectComments);
 
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const { uri, id } = route.params;
 
   const onPressCommentBtn = async () => {
     if (comment)
       try {
-        const { displayName, uid } = auth.currentUser;
+        const { displayName, uid } = getAuth().currentUser;
         const creationTime = Date.now();
         const postId = id;
         const newComment = { comment, displayName, uid, postId, creationTime };
         await dispatch(addComment(newComment)).unwrap();
 
-        setComment('');
+        setComment("");
       } catch (error) {
         console.log(error.message);
       }
@@ -46,7 +49,9 @@ export default function CommentsScreen() {
     }, [dispatch])
   );
 
-  const filteredCommentsByPost = allComments.filter(item => item.postId === id);
+  const filteredCommentsByPost = allComments.filter(
+    (item) => item.postId === id
+  );
   const sortedComments = [...filteredCommentsByPost].sort(
     (firstComment, secondComment) =>
       firstComment.creationTime - secondComment.creationTime
@@ -73,7 +78,7 @@ export default function CommentsScreen() {
       </View>
       <View style={styles.inputWrap}>
         <KeyboardAvoidingView
-          behavior={Platform.OS == 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS == "ios" ? "padding" : "height"}
         >
           <TextInput
             placeholder="Коментувати..."
@@ -88,18 +93,18 @@ export default function CommentsScreen() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     paddingHorizontal: 16,
     paddingTop: 10,
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: '#fff',
+    alignItems: "center",
+    justifyContent: "flex-start",
+    backgroundColor: "#fff",
   },
   photo: {
     width: 288,
@@ -114,7 +119,7 @@ const styles = StyleSheet.create({
   commentWrap: {
     padding: 10,
     marginBottom: 10,
-    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
     borderRadius: 4,
   },
   userName: { marginBottom: 5 },
@@ -123,31 +128,31 @@ const styles = StyleSheet.create({
     lineHeight: 19,
   },
   inputWrap: {
-    position: 'relative',
-    width: '100%',
+    position: "relative",
+    width: "100%",
     marginTop: 15,
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 40,
-    justifyContent: 'center',
+    justifyContent: "center",
     paddingVertical: 8,
     paddingLeft: 16,
-    borderColor: '#e8e8e8',
-    borderStyle: 'solid',
+    borderColor: "#e8e8e8",
+    borderStyle: "solid",
     borderWidth: 1,
     borderRadius: 50,
-    backgroundColor: '#f6f6f6',
+    backgroundColor: "#f6f6f6",
     fontSize: 16,
     lineHeight: 19,
   },
   inputBtn: {
-    position: 'absolute',
+    position: "absolute",
     top: 8,
     right: 5,
     width: 24,
     height: 24,
-    backgroundColor: '#ff6c00',
+    backgroundColor: "#ff6c00",
     borderRadius: 50,
   },
 });

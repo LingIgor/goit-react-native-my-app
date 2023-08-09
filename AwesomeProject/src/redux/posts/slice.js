@@ -1,18 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { postsList } from "./postOperations";
+import { getAllPosts } from "./postOperations";
 
 const initialState = {
   posts: [],
 };
 
-export const PostsSlice = createSlice({
-  name: "post",
+const postsSlice = createSlice({
+  name: "posts",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase(postsList, (state, { payload }) => {
+    builder.addCase(getAllPosts.fulfilled, (state, { payload }) => {
       state.posts = payload;
     });
   },
 });
 
-export const PostsSliceReducer = PostsSlice.reducer;
+export const postsReducer = postsSlice.reducer;

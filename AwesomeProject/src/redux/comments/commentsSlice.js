@@ -1,19 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
-import { getAllComments } from './commentsOperations';
+import { createSlice } from "@reduxjs/toolkit";
+import { getAllComments } from "./commentsOperations";
 
 const initialState = {
   comments: [],
 };
 
-const handleFulfilledGetAllComments = (state, { payload }) => {
-    state.comments = payload;
-};
-
 const commentsSlice = createSlice({
-  name: 'comments',
+  name: "comments",
   initialState,
-  extraReducers: builder => {
-    builder.addCase(getAllComments.fulfilled, handleFulfilledGetAllComments);
+  extraReducers: (builder) => {
+    builder.addCase(getAllComments.fulfilled, (state, { payload }) => {
+      state.comments = payload;
+    });
   },
 });
 

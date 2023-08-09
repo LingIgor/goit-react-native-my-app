@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback } from "react";
 import {
   StyleSheet,
   View,
@@ -7,21 +7,21 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-} from 'react-native';
-import { auth } from '../../firebase/config';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import BgImage from '../../images/PhotoBG2.jpg';
-import { selectUserPosts } from '../../redux/posts/postSelectors';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllPosts } from '../../redux/posts/postOperations';
-import { Feather } from '@expo/vector-icons';
-import { logOut } from '../../redux/auth/authOperations';
+} from "react-native";
+import { auth } from "../../firebase/config";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import BgImage from "../../images/PhotoBG2.jpg";
+import { selectUserPosts } from "../../redux/posts/postSelectors";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts } from "../../redux/posts/postOperations";
+import { Feather } from "@expo/vector-icons";
+import { logOut } from "../../redux/auth/authOperations";
 
-export default function ProfileScreen() {
+export const ProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const userPosts = useSelector(selectUserPosts);
-  
+
   const user = auth.currentUser;
 
   useFocusEffect(
@@ -46,7 +46,7 @@ export default function ProfileScreen() {
               backgroundColor="#fff"
             />
           </TouchableOpacity>
-          <Text style={styles.title}>{user.displayName ?? 'underfined'}</Text>
+          <Text style={styles.title}>{user.displayName ?? "underfined"}</Text>
           <FlatList
             data={userPosts}
             keyExtractor={(_, index) => index.toString()}
@@ -58,20 +58,20 @@ export default function ProfileScreen() {
                   <TouchableOpacity
                     style={styles.commentsWrap}
                     onPress={() =>
-                      navigation.navigate('Comments', { uri: item.image })
+                      navigation.navigate("Comments", { uri: item.image })
                     }
                   >
                     <Feather
                       name="message-circle"
                       size={24}
-                      color={'#bdbdbd'}
+                      color={"#bdbdbd"}
                     />
                     <Text style={styles.commentsText}>Коментарі</Text>
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.locationWrap}
                     onPress={() =>
-                      navigation.navigate('Map', {
+                      navigation.navigate("Map", {
                         latitude: item.location.coords.latitude,
                         longitude: item.location.coords.longitude,
                       })
@@ -90,44 +90,44 @@ export default function ProfileScreen() {
       </ImageBackground>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   image: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
+    flexDirection: "column",
+    justifyContent: "flex-end",
   },
   wrap: {
-    position: 'relative',
-    width: '100%',
+    position: "relative",
+    width: "100%",
     height: 400,
     paddingTop: 70,
     paddingHorizontal: 25,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
   },
   userPicture: {
-    position: 'absolute',
+    position: "absolute",
     top: -60,
-    alignSelf: 'center',
+    alignSelf: "center",
     width: 120,
     height: 120,
-    backgroundColor: '#f6f6f6',
+    backgroundColor: "#f6f6f6",
     borderRadius: 16,
   },
   logOutBtn: {
-    position: 'absolute',
+    position: "absolute",
     top: 10,
     right: 10,
   },
@@ -136,8 +136,8 @@ const styles = StyleSheet.create({
     fontSize: 30,
     letterSpacing: 0.01,
     lineHeight: 35.16,
-    textAlign: 'center',
-    color: '#212121',
+    textAlign: "center",
+    color: "#212121",
   },
   itemWrap: {
     marginTop: 10,
@@ -148,33 +148,33 @@ const styles = StyleSheet.create({
     height: 180,
     marginBottom: 8,
     borderRadius: 8,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   infoWrap: {
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   commentsWrap: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
   },
   locationWrap: {
     flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 5,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   nameText: {
     marginBottom: 11,
   },
   commentsText: {
-    color: '#212121',
+    color: "#212121",
   },
   nameLocationText: {
-    color: '#212121',
+    color: "#212121",
   },
 });

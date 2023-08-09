@@ -18,8 +18,10 @@ import AddIcon from "../../images/add.png";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
-import { auth } from "../../firebase/config";
+import { getAuth } from "firebase/auth";
 import storage from "../../../storage";
+
+const auth = getAuth();
 
 const initialState = {
   email: "",
@@ -28,10 +30,6 @@ const initialState = {
 };
 
 export const RegistrationScreen = () => {
-  // const [login, setLogin] = useState("");
-  // const [mail, setMail] = useState("");
-  // const [pass, setPass] = useState("");
-
   const [state, setState] = useState(initialState);
   const loggedIn = useSelector((state) => state.auth.uid);
 

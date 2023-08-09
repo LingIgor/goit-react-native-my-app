@@ -13,13 +13,15 @@ import {
 } from "react-native";
 
 import BackPhoto from "../../images/PhotoBG.png";
-import AddIcon from "../../images/add.png";
+
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { authSingIn } from "../../redux/auth/authOperations";
 import { useDispatch, useSelector } from "react-redux";
-import { auth } from "../../firebase/config";
+import { getAuth } from "firebase/auth";
 import storage from "../../../storage";
+
+const auth = getAuth();
 
 const initialState = {
   email: "",
