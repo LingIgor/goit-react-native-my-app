@@ -5,6 +5,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
@@ -12,15 +13,14 @@ import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { Feather } from "@expo/vector-icons";
 import React, { useState, useEffect } from "react";
-import useDispatch from "react-redux";
-import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
+
+import { TextInput } from "react-native-gesture-handler";
 import { addPost } from "../../redux/posts/postOperations";
 import { getAuth } from "firebase/auth";
 import app from "../../../firebase/config";
 
 export const CreatePostsScreen = () => {
   const navigation = useNavigation();
-
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
@@ -28,81 +28,70 @@ export const CreatePostsScreen = () => {
   const [name, setName] = useState("");
   const [nameLocation, setNameLocation] = useState(null);
 
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      await MediaLibrary.requestPermissionsAsync();
-      setHasPermission(status === "granted");
-      let locationPermission =
-        await Location.requestForegroundPermissionsAsync();
-      if (locationPermission.status !== "granted") {
-        console.log("Permission to access location was denied");
-      }
-    })();
-  }, []);
-
-  if (!hasPermission) {
-    return <Text>No access to camera</Text>;
-  }
-
-  const saveFoto = async () => {
-    if (cameraRef) {
-      const { uri } = await cameraRef.takePictureAsync();
-      // await MediaLibrary.requestPermissionsAsync(uri);
-      await MediaLibrary.createAssetAsync(uri);
-      setImage(uri);
-    }
-  };
-
-  const onPublish = async () => {
-    if (!photo) return;
-
-    try {
-      let location = await Location.getCurrentPositionAsync({});
-      const { uid, displayName } = getAuth(app).currentUser;
-      const post = { uid, image, location, name, nameLocation, displayName };
-
-      await dispatch(addPost(post)).unwrap();
-
-      navigation.navigate("Posts", { post });
-      setName("");
-      setNameLocation("");
-      setPhoto(null);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
-  return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <View style={styles.addFoto}>
-          <Camera style={styles.camera} type={type} ref={setCameraRef}>
-            <TouchableOpacity style={styles.fotoIcon} onPress={saveFoto}>
-              <Feather name="camera" size={24} style={styles.icon} />
-            </TouchableOpacity>
-          </Camera>
-        </View>
-
-        <Text style={styles.loadFoto}>Завантажте фото</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Name"
-          onChangeText={setName}
-        ></TextInput>
-        <TextInput
-          style={styles.input}
-          placeholder="Location"
-          onChangeText={setNameLocation}
-        ></TextInput>
-        <TouchableOpacity style={styles.button} onPress={onPublish}>
-          <Text style={styles.textBtn}>Опублікувати</Text>
-        </TouchableOpacity>
-      </View>
-    </TouchableWithoutFeedback>
-  );
+  // useEffect(() => {
+  //   (async () => {
+  //     const { status } = await Camera.requestCameraPermissionsAsync();
+  //     await MediaLibrary.requestPermissionsAsync();
+  //     setHasPermission(status === "granted");
+  //     let locationPermission =
+  //       await Location.requestForegroundPermissionsAsync();
+  //     if (locationPermission.status !== "granted") {
+  //       console.log("Permission to access location was denied");
+  //     }
+  //   })();
+  // }, []);
+  // if (!hasPermission) {
+  //   return <Text>No access to camera</Text>;
+  // }
+  // const saveFoto = async () => {
+  //   if (cameraRef) {
+  //     const { uri } = await cameraRef.takePictureAsync();
+  //     await MediaLibrary.createAssetAsync(uri);
+  //     setPhoto(uri);
+  //   }
+  // };
+  // const onPublish = async () => {
+  //   if (!photo) return;
+  //   try {
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     const { uid, displayName } = getAuth(app).currentUser;
+  //     const post = { uid, image, location, name, nameLocation, displayName };
+  //     await dispatch(addPost(post)).unwrap();
+  //     navigation.navigate("Posts", { post });
+  //     setName("");
+  //     setNameLocation("");
+  //     setImage(null);
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // };
+  // return (
+  //   <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+  //     <View style={styles.container}>
+  //       <View style={styles.addFoto}>
+  //         <Camera style={styles.camera} type={type} ref={setCameraRef}>
+  //           <TouchableOpacity style={styles.fotoIcon} onPress={saveFoto}>
+  //             <Feather name="camera" size={24} style={styles.icon} />
+  //           </TouchableOpacity>
+  //         </Camera>
+  //       </View>
+  //       <Text style={styles.loadFoto}>Завантажте фото</Text>
+  //       <TextInput
+  //         style={styles.input}
+  //         placeholder="Name"
+  //         onChangeText={setName}
+  //       ></TextInput>
+  //       <TextInput
+  //         style={styles.input}
+  //         placeholder="Location"
+  //         onChangeText={setNameLocation}
+  //       ></TextInput>
+  //       <TouchableOpacity style={styles.button} onPress={onPublish}>
+  //         <Text style={styles.textBtn}>Опублікувати</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   </TouchableWithoutFeedback>
+  // );
 };
 
 const styles = StyleSheet.create({
