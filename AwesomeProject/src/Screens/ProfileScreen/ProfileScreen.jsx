@@ -17,6 +17,7 @@ import { getAllPosts } from "../../redux/posts/postOperations";
 import { Feather } from "@expo/vector-icons";
 import { logOut } from "../../redux/auth/authOperations";
 import app from "../../../firebase/config";
+import { oneImage } from "../PostsScreen/PostsScreen";
 
 export const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -31,6 +32,40 @@ export const ProfileScreen = () => {
       dispatch(getAllPosts()).unwrap();
     }, [dispatch])
   );
+
+  const oneImage = ({ item }) => {
+    return (
+      <View>
+        <Image style={styles.img} source={{ uri: item.photo }}></Image>
+        <Text style={styles.nameText}>{item.name}</Text>
+        <Text>{item.displayName}</Text>
+        <View style={styles.iconBar}>
+          <TouchableOpacity
+            style={styles.iconLoc}
+            onPress={() =>
+              navigation.navigate("Comments", { uri: item.photo, id: item.id })
+            }
+          >
+            <Feather name="message-circle" size={24} color={"#bdbdbd"} />
+            <Text>0</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.iconLoc}
+            onPress={() =>
+              navigation.navigate("Map", {
+                latitude: item.location.coords.latitude,
+                longitude: item.location.coords.longitude,
+              })
+            }
+          >
+            <Feather name="map-pin" size={24} color="#bdbdbd" />
+            <Text style={styles.nameLocationText}>{item.nameLocation}</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -52,41 +87,7 @@ export const ProfileScreen = () => {
           <FlatList
             data={userPosts}
             keyExtractor={(_, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.itemWrap}>
-                <Image source={{ uri: item.image }} style={styles.photo} />
-                <Text style={styles.nameText}>{item.name}</Text>
-                <View style={styles.infoWrap}>
-                  <TouchableOpacity
-                    style={styles.commentsWrap}
-                    onPress={() =>
-                      navigation.navigate("Comments", { uri: item.image })
-                    }
-                  >
-                    <Feather
-                      name="message-circle"
-                      size={24}
-                      color={"#bdbdbd"}
-                    />
-                    <Text style={styles.commentsText}>Коментарі</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.locationWrap}
-                    onPress={() =>
-                      navigation.navigate("Map", {
-                        latitude: item.location.coords.latitude,
-                        longitude: item.location.coords.longitude,
-                      })
-                    }
-                  >
-                    <Feather name="map-pin" size={24} color="#bdbdbd" />
-                    <Text style={styles.nameLocationText}>
-                      {item.nameLocation}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
+            renderItem={oneImage}
           />
         </View>
       </ImageBackground>
@@ -178,5 +179,35 @@ const styles = StyleSheet.create({
   },
   nameLocationText: {
     color: "#212121",
+  },
+
+  addFoto: {
+    marginTop: 32,
+    width: "100%",
+    height: "100%",
+    borderRadius: 8,
+    backgroundColor: "white",
+  },
+  img: {
+    width: "100%",
+    height: 234,
+    resizeMode: "stretch",
+  },
+  iconBar: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  iconLoc: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    fontSize: 16,
+  },
+  nameText: {
+    fontSize: 16,
+    fontWeight: 500,
+    marginBottom: 8,
   },
 });

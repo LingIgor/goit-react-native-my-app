@@ -25,10 +25,9 @@ export const PostsScreen = () => {
   );
 
   const oneImage = ({ item }) => {
-    console.log(item.id);
     return (
       <View>
-        <Image style={styles.img} source={{ uri: item.image }}></Image>
+        <Image style={styles.img} source={{ uri: item.photo }}></Image>
         <Text style={styles.nameText}>{item.name}</Text>
         <Text>{item.displayName}</Text>
         <View style={styles.iconBar}>
@@ -39,7 +38,6 @@ export const PostsScreen = () => {
             }
           >
             <Feather name="message-circle" size={24} color={"#bdbdbd"} />
-            <Text>0</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -68,8 +66,6 @@ export const PostsScreen = () => {
           renderItem={oneImage}
         />
       </View>
-
-      {/* <Text onPress={console.log(collection)}>clock</Text> */}
     </View>
   );
 };
@@ -84,7 +80,7 @@ const styles = StyleSheet.create({
   },
   addFoto: {
     marginTop: 32,
-    width: "100%",
+    width: 330,
     height: "100%",
     borderRadius: 8,
     backgroundColor: "white",
