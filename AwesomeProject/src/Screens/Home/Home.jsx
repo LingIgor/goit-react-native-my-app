@@ -6,7 +6,7 @@ import { CreatePostsScreen } from "../CreatePostsScreen/CreatePostsScreen";
 import { ProfileScreen } from "../ProfileScreen/ProfileScreen";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Ionicons, Feather } from "@expo/vector-icons";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logOut } from "../../redux/auth/authOperations";
 // import { useEffect } from "react";
 // import { getAuth } from "firebase/auth";

@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
   },
+
   addFoto: {
     marginTop: 32,
     width: 330,
@@ -85,11 +86,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "white",
   },
+
   img: {
     width: "100%",
     height: 234,
     resizeMode: "stretch",
   },
+
   iconBar: {
     flex: 1,
     flexDirection: "row",

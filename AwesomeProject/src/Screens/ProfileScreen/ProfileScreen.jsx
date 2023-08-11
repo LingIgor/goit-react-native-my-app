@@ -33,6 +33,10 @@ export const ProfileScreen = () => {
     }, [dispatch])
   );
 
+  const handleLogOut = () => {
+    dispatch(logOut());
+  };
+
   const oneImage = ({ item }) => {
     return (
       <View>
@@ -72,10 +76,7 @@ export const ProfileScreen = () => {
       <ImageBackground source={BgImage} resizeMode="cover" style={styles.image}>
         <View style={styles.wrap}>
           <View style={styles.userPicture}></View>
-          <TouchableOpacity
-            onPress={() => dispatch(logOut())}
-            style={styles.logOutBtn}
-          >
+          <TouchableOpacity onPress={handleLogOut} style={styles.logOutBtn}>
             <Feather
               name="log-out"
               size={24}

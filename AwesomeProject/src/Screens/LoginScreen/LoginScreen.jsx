@@ -50,8 +50,6 @@ export const Login = () => {
         },
       });
     } catch (e) {
-      // Alert.alert("registration please");
-      // navigation.navigate("Registration");
       console.error(e);
     }
   };

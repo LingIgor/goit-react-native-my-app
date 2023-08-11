@@ -1,28 +1,15 @@
 import { AuthScreen } from "./AuthScreen";
 import { AppScreen } from "./AppScreen";
+import { useSelector } from "react-redux";
 
-import { useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged} from 'firebase/auth';
+// import { useEffect, useState } from "react";
 
+// import { getAuth, onAuthStateChanged } from "firebase/auth";
+// import app from "../../firebase/config";
 
-export function RootNavigation() {  
-const auth = getAuth();
-const [user, setUser] = useState();
+export const RootNavigation = () => {
+  const probnik = useSelector((state) => state);
+  const user = useSelector((state) => state.auth.isLoggedIn);
 
-
-  useEffect(() => {
-    const onAuthState = onAuthStateChanged(auth, user => {
-      if (user) {
-        setUser(user);
-      } else {
-        setUser(undefined);
-      }
-    });
-    return onAuthState;
-  }, []);
-
-  
-  
-
-  return user? <AppScreen /> : <AuthScreen />;
-}
+  return user ? <AppScreen /> : <AuthScreen />;
+};
